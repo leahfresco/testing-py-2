@@ -70,6 +70,20 @@ class PartyTestsDatabase(unittest.TestCase):
 
         self.assertIn("Scrabble", result.data)
 
+    def test_add_game(self):
+        """ Tests the adding of a game """
+        result = self.client.post('/add-game', data={"game": "fake game",
+                                                "description": "this is a game"},
+                                                follow_redirects=True)
+        self.assertIn("this is a game", result.data)
+
+    def test_add_game_form(self):
+        """ Tests that game form is there """
+
+        result = self.client.get('/add-game')
+
+        self.assertIn("Please add your game", result.data)
+
 
 if __name__ == "__main__":
     unittest.main()

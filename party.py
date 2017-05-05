@@ -3,7 +3,7 @@
 
 from flask import Flask, session, render_template, request, flash, redirect
 from flask_debugtoolbar import DebugToolbarExtension
-from model import Game, connect_to_db
+from model import Game, connect_to_db, db
 
 app = Flask(__name__)
 app.secret_key = "SECRETSECRETSECRET"
@@ -36,6 +36,24 @@ def games():
         return render_template("games.html", games=games)
     else:
         return redirect("/")
+
+@app.route("/add-game")
+def add_game():
+    """ Allows partygoer to add a game """
+    return render_template("add_game.html")
+
+@app.route("/add-game", methods=["POST"])
+def add_game_db():
+    """ Adds game to games database """
+
+    game = request.form.get("game")
+    description = request.form.get("description")
+
+    new_game = Game(name=game, description=description)
+    db.session.add(new_game)
+    db.session.commit()
+
+    return redirect('/games')
 
 
 if __name__ == "__main__":
